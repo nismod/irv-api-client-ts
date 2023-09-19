@@ -1,0 +1,26 @@
+{
+  "name": "@nismod/irv-api-client",
+  "version": "0.8.0",
+  "description": "API client for infra-risk-vis backend",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "generate-client": "openapi -i openapi.json -o src --client fetch --name ApiClient --useOptions --exportSchemas true",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nismod/irv-api-client-ts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nismod/irv-api-client-ts/issues"
+  },
+  "homepage": "https://github.com/nismod/irv-api-client-ts#readme",
+  "devDependencies": {
+    "openapi-typescript-codegen": "^0.25.0",
+    "typescript": "^5.2.2"
+  }
+}

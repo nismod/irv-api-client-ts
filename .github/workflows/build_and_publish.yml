@@ -1,0 +1,32 @@
+name: Build and publish TypeScript API client
+on:
+  push :
+    branches:
+      - main
+
+env:
+  REGISTRY: https://npm.pkg.github.com
+
+jobs:
+  publish-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: npm
+          registry-url: ${{ env.REGISTRY }}
+          scope: '@nismod'
+
+      - run: npm ci
+
+      - name: Build project and publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
