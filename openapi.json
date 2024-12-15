@@ -1,1 +1,1165 @@
-{"openapi":"3.0.2","info":{"title":"GRI Infra-Risk-Vis API","description":"API Supporting Global Resilience Initiative Visualisation UI.  Serving geospatial features (inc. related damages) and raster tiles (via Terracotta)","contact":{"name":"Tom Russell","url":"https://github.com/nismod/infra-risk-vis","email":""},"license":{"name":"MIT","url":"https://raw.githubusercontent.com/nismod/infra-risk-vis/master/LICENSE"},"version":"0.8.0"},"paths":{"/features/{feature_id}":{"get":{"tags":["features"],"summary":"Read Feature","operationId":"features-read_feature","parameters":[{"required":true,"schema":{"title":"Feature Id","type":"integer"},"name":"feature_id","in":"path"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FeatureOut"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/features/sorted-by/{field_group}":{"get":{"tags":["features"],"summary":"Read Sorted Features","operationId":"features-read_sorted_features","parameters":[{"required":true,"schema":{"title":"Field Group","type":"string"},"name":"field_group","in":"path"},{"required":true,"schema":{"title":"Field","type":"string"},"name":"field","in":"query"},{"required":true,"schema":{"title":"Dimensions","type":"string","format":"json-string"},"name":"dimensions","in":"query"},{"required":true,"schema":{"title":"Parameters","type":"string","format":"json-string"},"name":"parameters","in":"query"},{"required":false,"schema":{"title":"Layer","type":"string"},"name":"layer","in":"query"},{"required":false,"schema":{"title":"Sector","type":"string"},"name":"sector","in":"query"},{"required":false,"schema":{"title":"Subsector","type":"string"},"name":"subsector","in":"query"},{"required":false,"schema":{"title":"Asset Type","type":"string"},"name":"asset_type","in":"query"},{"required":false,"schema":{"title":"Page","minimum":1.0,"type":"integer","default":1},"name":"page","in":"query"},{"required":false,"schema":{"title":"Size","maximum":100.0,"minimum":1.0,"type":"integer","default":50},"name":"size","in":"query"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Page_FeatureListItemOut_float__"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/attributes/{field_group}":{"post":{"tags":["attributes"],"summary":"Read Attributes","operationId":"attributes-read_attributes","parameters":[{"required":true,"schema":{"title":"Field Group","type":"string"},"name":"field_group","in":"path"},{"required":true,"schema":{"title":"Layer","type":"string"},"name":"layer","in":"query"},{"required":true,"schema":{"title":"Field","type":"string"},"name":"field","in":"query"},{"required":true,"schema":{"title":"Dimensions","type":"string","format":"json-string"},"name":"dimensions","in":"query"},{"required":true,"schema":{"title":"Parameters","type":"string","format":"json-string"},"name":"parameters","in":"query"}],"requestBody":{"content":{"application/json":{"schema":{"title":"Ids","type":"array","items":{"type":"integer"}}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"title":"Response Attributes-Read Attributes","type":"object"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/tiles/sources":{"get":{"tags":["tiles"],"summary":"Get All Tile Source Meta","description":"Retrieve metadata about all the tile sources available","operationId":"tiles-get_all_tile_source_meta","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"title":"Response Tiles-Get All Tile Source Meta","type":"array","items":{"$ref":"#/components/schemas/TileSourceMeta"}}}}}}},"post":{"tags":["tiles"],"summary":"Insert Source Meta","description":"Ingest Tile Source Meta","operationId":"tiles-insert_source_meta","parameters":[{"required":true,"schema":{"title":"X-Token","type":"string"},"name":"x-token","in":"header"}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TileSourceMeta"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/tiles/sources/{source_id}":{"get":{"tags":["tiles"],"summary":"Get Tile Source Meta","description":"Retrieve metadata about a single tile source","operationId":"tiles-get_tile_source_meta","parameters":[{"required":true,"schema":{"title":"Source Id","type":"integer"},"name":"source_id","in":"path"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TileSourceMeta"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["tiles"],"summary":"Delete Source Meta","description":"Delete Tile Source Meta","operationId":"tiles-delete_source_meta","parameters":[{"required":true,"schema":{"title":"Source Id","type":"integer"},"name":"source_id","in":"path"},{"required":true,"schema":{"title":"X-Token","type":"string"},"name":"x-token","in":"header"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/tiles/sources/{source_id}/domains":{"get":{"tags":["tiles"],"summary":"Get Tile Source Domains","description":"Retrieve all combinations available for the source domain","operationId":"tiles-get_tile_source_domains","parameters":[{"required":true,"schema":{"title":"Source Id","type":"integer"},"name":"source_id","in":"path"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TileSourceDomains"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/tiles/{keys}/{tile_z}/{tile_x}/{tile_y}.png":{"get":{"tags":["tiles"],"summary":"Get Tile","description":"Serves XYZ Raster Tiles with the given colormap / stretch range or explicit color map for categorical data.\n\n::param keys str A string containing the url-encoded keys which address the required raster.\n\n    This string is constructed as-per Terracotta URL requests, e.g: `aqueduct/gsm1/1980/baseline`\n\n    Information about datasets available, their associated keys and order can be found using the `/tiles/sources/21/domains` endpoint.\n\n::param tile_z int Tile Z address\n::param tile_x int Tile X address\n::param tile_y int Tile Y address\n\n::kwarg colormap str A string representing the colormap to be used to render the tile.  Colormaps can be access separately through the `/colormap` endpoint\n\n    e.g. `colormap=reds`\n\n::kwarg stretch_range iterable The range over-which to stretch the pixel values\n\n    e.g. `stretch_range=[0,10]`\n\n::kwarg explicit_color_map str A categorical colormap `{pixel_value: (R,G,B,A)}` to be used with a given categorical data-source.\n\n    __NOTE__: `colormap` arg must be set to \"explicit\" in order to use `explicit_color_map`\n\n    .e.g colormap=explicit&explicit_color_map=\"{\"0\": (0,0,0,255), \"1\": 0,0,255,255, \"2\": 0,255,255,255, \"3\": 255,255,255,255}\"","operationId":"tiles-get_tile","parameters":[{"required":true,"schema":{"title":"Keys","type":"string"},"name":"keys","in":"path"},{"required":true,"schema":{"title":"Tile Z","type":"integer"},"name":"tile_z","in":"path"},{"required":true,"schema":{"title":"Tile X","type":"integer"},"name":"tile_x","in":"path"},{"required":true,"schema":{"title":"Tile Y","type":"integer"},"name":"tile_y","in":"path"},{"required":false,"schema":{"title":"Colormap","type":"string"},"name":"colormap","in":"query"},{"required":false,"schema":{"title":"Stretch Range","type":"string"},"name":"stretch_range","in":"query"},{"required":false,"schema":{"title":"Explicit Color Map","type":"string"},"name":"explicit_color_map","in":"query"}],"responses":{"200":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/colormap":{"get":{"tags":["colormap"],"summary":"Get Colormap","description":"Retrieve colormap values.  e.g. `colormap?colormap=reds&stretch_range=[0,10]`\n\n::param colormap str The name of the colormap, e.g. `colormap=reds`\n\n::param stretch_range iterable The url-encoded stretch-range over-which the colors should be generated\n\n    e.g. `stretch_range=[0,10]`\n\n::kwarg num_values int Number of values to generate in the colormap","operationId":"colormap-get_colormap","parameters":[{"required":true,"schema":{"title":"Colormap","type":"string"},"name":"colormap","in":"query"},{"required":true,"schema":{"title":"Stretch Range","type":"string"},"name":"stretch_range","in":"query"},{"required":false,"schema":{"title":"Num Values","type":"integer","default":255},"name":"num_values","in":"query"}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ColorMap"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"Adaptation":{"title":"Adaptation","required":["adaptation_cost","avoided_ead_amin","avoided_ead_mean","avoided_ead_amax","avoided_eael_amin","avoided_eael_mean","avoided_eael_amax","hazard","rcp","adaptation_name","adaptation_protection_level"],"type":"object","properties":{"adaptation_cost":{"title":"Adaptation Cost","type":"number"},"avoided_ead_amin":{"title":"Avoided Ead Amin","type":"number"},"avoided_ead_mean":{"title":"Avoided Ead Mean","type":"number"},"avoided_ead_amax":{"title":"Avoided Ead Amax","type":"number"},"avoided_eael_amin":{"title":"Avoided Eael Amin","type":"number"},"avoided_eael_mean":{"title":"Avoided Eael Mean","type":"number"},"avoided_eael_amax":{"title":"Avoided Eael Amax","type":"number"},"hazard":{"title":"Hazard","type":"string"},"rcp":{"title":"Rcp","type":"string"},"adaptation_name":{"title":"Adaptation Name","type":"string"},"adaptation_protection_level":{"title":"Adaptation Protection Level","type":"number"}}},"ColorMap":{"title":"ColorMap","required":["colormap"],"type":"object","properties":{"colormap":{"title":"Colormap","type":"array","items":{"$ref":"#/components/schemas/ColorMapEntry"}}}},"ColorMapEntry":{"title":"ColorMapEntry","required":["value","rgba"],"type":"object","properties":{"value":{"title":"Value","type":"number"},"rgba":{"title":"Rgba","type":"array","items":{"type":"integer"}}}},"ExpectedDamage":{"title":"ExpectedDamage","required":["ead_amin","ead_mean","ead_amax","eael_amin","eael_mean","eael_amax","hazard","rcp","epoch","protection_standard"],"type":"object","properties":{"ead_amin":{"title":"Ead Amin","type":"number"},"ead_mean":{"title":"Ead Mean","type":"number"},"ead_amax":{"title":"Ead Amax","type":"number"},"eael_amin":{"title":"Eael Amin","type":"number"},"eael_mean":{"title":"Eael Mean","type":"number"},"eael_amax":{"title":"Eael Amax","type":"number"},"hazard":{"title":"Hazard","type":"string"},"rcp":{"title":"Rcp","type":"string"},"epoch":{"title":"Epoch","type":"string"},"protection_standard":{"title":"Protection Standard","type":"integer"}}},"FeatureListItemOut_float_":{"title":"FeatureListItemOut[float]","required":["id","string_id","layer","bbox_wkt","value"],"type":"object","properties":{"id":{"title":"Id","type":"integer"},"string_id":{"title":"String Id","type":"string"},"layer":{"title":"Layer","type":"string"},"bbox_wkt":{"title":"Bbox Wkt","type":"string"},"value":{"title":"Value","type":"number"}}},"FeatureOut":{"title":"FeatureOut","required":["id","string_id","layer","properties"],"type":"object","properties":{"id":{"title":"Id","type":"integer"},"string_id":{"title":"String Id","type":"string"},"layer":{"title":"Layer","type":"string"},"sublayer":{"title":"Sublayer","type":"string"},"properties":{"title":"Properties","type":"object"},"damages_expected":{"title":"Damages Expected","type":"array","items":{"$ref":"#/components/schemas/ExpectedDamage"},"default":[]},"damages_return_period":{"title":"Damages Return Period","type":"array","items":{"$ref":"#/components/schemas/ReturnPeriodDamage"},"default":[]},"damages_npv":{"title":"Damages Npv","type":"array","items":{"$ref":"#/components/schemas/NPVDamage"},"default":[]},"adaptation":{"title":"Adaptation","type":"array","items":{"$ref":"#/components/schemas/Adaptation"},"default":[]}}},"HTTPValidationError":{"title":"HTTPValidationError","type":"object","properties":{"detail":{"title":"Detail","type":"array","items":{"$ref":"#/components/schemas/ValidationError"}}}},"NPVDamage":{"title":"NPVDamage","required":["ead_amin","ead_mean","ead_amax","eael_amin","eael_mean","eael_amax","hazard","rcp"],"type":"object","properties":{"ead_amin":{"title":"Ead Amin","type":"number"},"ead_mean":{"title":"Ead Mean","type":"number"},"ead_amax":{"title":"Ead Amax","type":"number"},"eael_amin":{"title":"Eael Amin","type":"number"},"eael_mean":{"title":"Eael Mean","type":"number"},"eael_amax":{"title":"Eael Amax","type":"number"},"hazard":{"title":"Hazard","type":"string"},"rcp":{"title":"Rcp","type":"string"}}},"Page_FeatureListItemOut_float__":{"title":"Page[FeatureListItemOut[float]]","required":["items","total","page","size"],"type":"object","properties":{"items":{"title":"Items","type":"array","items":{"$ref":"#/components/schemas/FeatureListItemOut_float_"}},"total":{"title":"Total","minimum":0.0,"type":"integer"},"page":{"title":"Page","minimum":1.0,"type":"integer"},"size":{"title":"Size","minimum":1.0,"type":"integer"}}},"ReturnPeriodDamage":{"title":"ReturnPeriodDamage","required":["exposure","damage_amin","damage_mean","damage_amax","loss_amin","loss_mean","loss_amax","hazard","rcp","epoch","rp"],"type":"object","properties":{"exposure":{"title":"Exposure","type":"number"},"damage_amin":{"title":"Damage Amin","type":"number"},"damage_mean":{"title":"Damage Mean","type":"number"},"damage_amax":{"title":"Damage Amax","type":"number"},"loss_amin":{"title":"Loss Amin","type":"number"},"loss_mean":{"title":"Loss Mean","type":"number"},"loss_amax":{"title":"Loss Amax","type":"number"},"hazard":{"title":"Hazard","type":"string"},"rcp":{"title":"Rcp","type":"string"},"epoch":{"title":"Epoch","type":"string"},"rp":{"title":"Rp","type":"integer"}}},"TileSourceDomains":{"title":"TileSourceDomains","required":["domains"],"type":"object","properties":{"domains":{"title":"Domains","type":"array","items":{"type":"object"}}}},"TileSourceMeta":{"title":"TileSourceMeta","required":["source_db","global_type","domain","full_name","description","license","variables"],"type":"object","properties":{"id":{"title":"Id","type":"integer"},"url_keys":{"title":"Url Keys","type":"array","items":{}},"source_db":{"title":"Source Db","type":"string"},"global_type":{"title":"Global Type","type":"string"},"domain":{"title":"Domain","type":"string"},"full_name":{"title":"Full Name","type":"string"},"description":{"title":"Description","type":"string"},"license":{"title":"License","type":"string"},"variables":{"title":"Variables","type":"object"}}},"ValidationError":{"title":"ValidationError","required":["loc","msg","type"],"type":"object","properties":{"loc":{"title":"Location","type":"array","items":{"anyOf":[{"type":"string"},{"type":"integer"}]}},"msg":{"title":"Message","type":"string"},"type":{"title":"Error Type","type":"string"}}}}}}
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "GRI Infra-Risk-Vis API",
+        "description": "API Supporting Global Resilience Initiative Visualisation UI.  Serving geospatial features (inc. related damages) and raster tiles (via Terracotta)",
+        "contact": {
+            "name": "Tom Russell",
+            "url": "https://github.com/nismod/infra-risk-vis",
+            "email": ""
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://raw.githubusercontent.com/nismod/infra-risk-vis/master/LICENSE"
+        },
+        "version": "0.8.0"
+    },
+    "paths": {
+        "/features/{feature_id}": {
+            "get": {
+                "tags": [
+                    "features"
+                ],
+                "summary": "Read Feature",
+                "operationId": "features-read_feature",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Feature Id",
+                            "type": "integer"
+                        },
+                        "name": "feature_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FeatureOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/features/sorted-by/{field_group}": {
+            "get": {
+                "tags": [
+                    "features"
+                ],
+                "summary": "Read Sorted Features",
+                "operationId": "features-read_sorted_features",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Field Group",
+                            "type": "string"
+                        },
+                        "name": "field_group",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Field",
+                            "type": "string"
+                        },
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Dimensions",
+                            "type": "string",
+                            "format": "json-string"
+                        },
+                        "name": "dimensions",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Parameters",
+                            "type": "string",
+                            "format": "json-string"
+                        },
+                        "name": "parameters",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Layer",
+                            "type": "string"
+                        },
+                        "name": "layer",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Sector",
+                            "type": "string"
+                        },
+                        "name": "sector",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Subsector",
+                            "type": "string"
+                        },
+                        "name": "subsector",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Asset Type",
+                            "type": "string"
+                        },
+                        "name": "asset_type",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Page",
+                            "minimum": 1.0,
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Size",
+                            "maximum": 100.0,
+                            "minimum": 1.0,
+                            "type": "integer",
+                            "default": 50
+                        },
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Page_FeatureListItemOut_float__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/attributes/{field_group}": {
+            "post": {
+                "tags": [
+                    "attributes"
+                ],
+                "summary": "Read Attributes",
+                "operationId": "attributes-read_attributes",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Field Group",
+                            "type": "string"
+                        },
+                        "name": "field_group",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Layer",
+                            "type": "string"
+                        },
+                        "name": "layer",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Field",
+                            "type": "string"
+                        },
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Dimensions",
+                            "type": "string",
+                            "format": "json-string"
+                        },
+                        "name": "dimensions",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Parameters",
+                            "type": "string",
+                            "format": "json-string"
+                        },
+                        "name": "parameters",
+                        "in": "query"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "title": "Ids",
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Attributes-Read Attributes",
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tiles/sources": {
+            "get": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Get All Tile Source Meta",
+                "description": "Retrieve metadata about all the tile sources available",
+                "operationId": "tiles-get_all_tile_source_meta",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Tiles-Get All Tile Source Meta",
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TileSourceMeta"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Insert Source Meta",
+                "description": "Ingest Tile Source Meta",
+                "operationId": "tiles-insert_source_meta",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "X-Token",
+                            "type": "string"
+                        },
+                        "name": "x-token",
+                        "in": "header"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TileSourceMeta"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tiles/sources/{source_id}": {
+            "get": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Get Tile Source Meta",
+                "description": "Retrieve metadata about a single tile source",
+                "operationId": "tiles-get_tile_source_meta",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Source Id",
+                            "type": "integer"
+                        },
+                        "name": "source_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TileSourceMeta"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Delete Source Meta",
+                "description": "Delete Tile Source Meta",
+                "operationId": "tiles-delete_source_meta",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Source Id",
+                            "type": "integer"
+                        },
+                        "name": "source_id",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "X-Token",
+                            "type": "string"
+                        },
+                        "name": "x-token",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tiles/sources/{source_id}/domains": {
+            "get": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Get Tile Source Domains",
+                "description": "Retrieve all combinations available for the source domain",
+                "operationId": "tiles-get_tile_source_domains",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Source Id",
+                            "type": "integer"
+                        },
+                        "name": "source_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TileSourceDomains"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tiles/{keys}/{tile_z}/{tile_x}/{tile_y}.png": {
+            "get": {
+                "tags": [
+                    "tiles"
+                ],
+                "summary": "Get Tile",
+                "description": "Serves XYZ Raster Tiles with the given colormap / stretch range or explicit color map for categorical data.\n\n::param keys str A string containing the url-encoded keys which address the required raster.\n\n    This string is constructed as-per Terracotta URL requests, e.g: `aqueduct/gsm1/1980/baseline`\n\n    Information about datasets available, their associated keys and order can be found using the `/tiles/sources/21/domains` endpoint.\n\n::param tile_z int Tile Z address\n::param tile_x int Tile X address\n::param tile_y int Tile Y address\n\n::kwarg colormap str A string representing the colormap to be used to render the tile.  Colormaps can be access separately through the `/colormap` endpoint\n\n    e.g. `colormap=reds`\n\n::kwarg stretch_range iterable The range over-which to stretch the pixel values\n\n    e.g. `stretch_range=[0,10]`\n\n::kwarg explicit_color_map str A categorical colormap `{pixel_value: (R,G,B,A)}` to be used with a given categorical data-source.\n\n    __NOTE__: `colormap` arg must be set to \"explicit\" in order to use `explicit_color_map`\n\n    .e.g colormap=explicit&explicit_color_map=\"{\"0\": (0,0,0,255), \"1\": 0,0,255,255, \"2\": 0,255,255,255, \"3\": 255,255,255,255}\"",
+                "operationId": "tiles-get_tile",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Keys",
+                            "type": "string"
+                        },
+                        "name": "keys",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Tile Z",
+                            "type": "integer"
+                        },
+                        "name": "tile_z",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Tile X",
+                            "type": "integer"
+                        },
+                        "name": "tile_x",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Tile Y",
+                            "type": "integer"
+                        },
+                        "name": "tile_y",
+                        "in": "path"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Colormap",
+                            "type": "string"
+                        },
+                        "name": "colormap",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Stretch Range",
+                            "type": "string"
+                        },
+                        "name": "stretch_range",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Explicit Color Map",
+                            "type": "string"
+                        },
+                        "name": "explicit_color_map",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/colormap": {
+            "get": {
+                "tags": [
+                    "colormap"
+                ],
+                "summary": "Get Colormap",
+                "description": "Retrieve colormap values.  e.g. `colormap?colormap=reds&stretch_range=[0,10]`\n\n::param colormap str The name of the colormap, e.g. `colormap=reds`\n\n::param stretch_range iterable The url-encoded stretch-range over-which the colors should be generated\n\n    e.g. `stretch_range=[0,10]`\n\n::kwarg num_values int Number of values to generate in the colormap",
+                "operationId": "colormap-get_colormap",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Colormap",
+                            "type": "string"
+                        },
+                        "name": "colormap",
+                        "in": "query"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Stretch Range",
+                            "type": "string"
+                        },
+                        "name": "stretch_range",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Num Values",
+                            "type": "integer",
+                            "default": 255
+                        },
+                        "name": "num_values",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ColorMap"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Adaptation": {
+                "title": "Adaptation",
+                "required": [
+                    "adaptation_cost",
+                    "avoided_ead_amin",
+                    "avoided_ead_mean",
+                    "avoided_ead_amax",
+                    "avoided_eael_amin",
+                    "avoided_eael_mean",
+                    "avoided_eael_amax",
+                    "hazard",
+                    "rcp",
+                    "adaptation_name",
+                    "adaptation_protection_level"
+                ],
+                "type": "object",
+                "properties": {
+                    "adaptation_cost": {
+                        "title": "Adaptation Cost",
+                        "type": "number"
+                    },
+                    "avoided_ead_amin": {
+                        "title": "Avoided Ead Amin",
+                        "type": "number"
+                    },
+                    "avoided_ead_mean": {
+                        "title": "Avoided Ead Mean",
+                        "type": "number"
+                    },
+                    "avoided_ead_amax": {
+                        "title": "Avoided Ead Amax",
+                        "type": "number"
+                    },
+                    "avoided_eael_amin": {
+                        "title": "Avoided Eael Amin",
+                        "type": "number"
+                    },
+                    "avoided_eael_mean": {
+                        "title": "Avoided Eael Mean",
+                        "type": "number"
+                    },
+                    "avoided_eael_amax": {
+                        "title": "Avoided Eael Amax",
+                        "type": "number"
+                    },
+                    "hazard": {
+                        "title": "Hazard",
+                        "type": "string"
+                    },
+                    "rcp": {
+                        "title": "Rcp",
+                        "type": "string"
+                    },
+                    "adaptation_name": {
+                        "title": "Adaptation Name",
+                        "type": "string"
+                    },
+                    "adaptation_protection_level": {
+                        "title": "Adaptation Protection Level",
+                        "type": "number"
+                    }
+                }
+            },
+            "ColorMap": {
+                "title": "ColorMap",
+                "required": [
+                    "colormap"
+                ],
+                "type": "object",
+                "properties": {
+                    "colormap": {
+                        "title": "Colormap",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ColorMapEntry"
+                        }
+                    }
+                }
+            },
+            "ColorMapEntry": {
+                "title": "ColorMapEntry",
+                "required": [
+                    "value",
+                    "rgba"
+                ],
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "title": "Value",
+                        "type": "number"
+                    },
+                    "rgba": {
+                        "title": "Rgba",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
+            "ExpectedDamage": {
+                "title": "ExpectedDamage",
+                "required": [
+                    "ead_amin",
+                    "ead_mean",
+                    "ead_amax",
+                    "eael_amin",
+                    "eael_mean",
+                    "eael_amax",
+                    "hazard",
+                    "rcp",
+                    "epoch",
+                    "protection_standard"
+                ],
+                "type": "object",
+                "properties": {
+                    "ead_amin": {
+                        "title": "Ead Amin",
+                        "type": "number"
+                    },
+                    "ead_mean": {
+                        "title": "Ead Mean",
+                        "type": "number"
+                    },
+                    "ead_amax": {
+                        "title": "Ead Amax",
+                        "type": "number"
+                    },
+                    "eael_amin": {
+                        "title": "Eael Amin",
+                        "type": "number"
+                    },
+                    "eael_mean": {
+                        "title": "Eael Mean",
+                        "type": "number"
+                    },
+                    "eael_amax": {
+                        "title": "Eael Amax",
+                        "type": "number"
+                    },
+                    "hazard": {
+                        "title": "Hazard",
+                        "type": "string"
+                    },
+                    "rcp": {
+                        "title": "Rcp",
+                        "type": "string"
+                    },
+                    "epoch": {
+                        "title": "Epoch",
+                        "type": "string"
+                    },
+                    "protection_standard": {
+                        "title": "Protection Standard",
+                        "type": "integer"
+                    }
+                }
+            },
+            "FeatureListItemOut_float_": {
+                "title": "FeatureListItemOut[float]",
+                "required": [
+                    "id",
+                    "string_id",
+                    "layer",
+                    "bbox_wkt",
+                    "value"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "Id",
+                        "type": "integer"
+                    },
+                    "string_id": {
+                        "title": "String Id",
+                        "type": "string"
+                    },
+                    "layer": {
+                        "title": "Layer",
+                        "type": "string"
+                    },
+                    "bbox_wkt": {
+                        "title": "Bbox Wkt",
+                        "type": "string"
+                    },
+                    "value": {
+                        "title": "Value",
+                        "type": "number"
+                    }
+                }
+            },
+            "FeatureOut": {
+                "title": "FeatureOut",
+                "required": [
+                    "id",
+                    "string_id",
+                    "layer",
+                    "properties"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "Id",
+                        "type": "integer"
+                    },
+                    "string_id": {
+                        "title": "String Id",
+                        "type": "string"
+                    },
+                    "layer": {
+                        "title": "Layer",
+                        "type": "string"
+                    },
+                    "sublayer": {
+                        "title": "Sublayer",
+                        "type": "string"
+                    },
+                    "properties": {
+                        "title": "Properties",
+                        "type": "object"
+                    },
+                    "damages_expected": {
+                        "title": "Damages Expected",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExpectedDamage"
+                        },
+                        "default": []
+                    },
+                    "damages_return_period": {
+                        "title": "Damages Return Period",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnPeriodDamage"
+                        },
+                        "default": []
+                    },
+                    "damages_npv": {
+                        "title": "Damages Npv",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NPVDamage"
+                        },
+                        "default": []
+                    },
+                    "adaptation": {
+                        "title": "Adaptation",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Adaptation"
+                        },
+                        "default": []
+                    }
+                }
+            },
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "NPVDamage": {
+                "title": "NPVDamage",
+                "required": [
+                    "ead_amin",
+                    "ead_mean",
+                    "ead_amax",
+                    "eael_amin",
+                    "eael_mean",
+                    "eael_amax",
+                    "hazard",
+                    "rcp"
+                ],
+                "type": "object",
+                "properties": {
+                    "ead_amin": {
+                        "title": "Ead Amin",
+                        "type": "number"
+                    },
+                    "ead_mean": {
+                        "title": "Ead Mean",
+                        "type": "number"
+                    },
+                    "ead_amax": {
+                        "title": "Ead Amax",
+                        "type": "number"
+                    },
+                    "eael_amin": {
+                        "title": "Eael Amin",
+                        "type": "number"
+                    },
+                    "eael_mean": {
+                        "title": "Eael Mean",
+                        "type": "number"
+                    },
+                    "eael_amax": {
+                        "title": "Eael Amax",
+                        "type": "number"
+                    },
+                    "hazard": {
+                        "title": "Hazard",
+                        "type": "string"
+                    },
+                    "rcp": {
+                        "title": "Rcp",
+                        "type": "string"
+                    }
+                }
+            },
+            "Page_FeatureListItemOut_float__": {
+                "title": "Page[FeatureListItemOut[float]]",
+                "required": [
+                    "items",
+                    "total",
+                    "page",
+                    "size"
+                ],
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "title": "Items",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeatureListItemOut_float_"
+                        }
+                    },
+                    "total": {
+                        "title": "Total",
+                        "minimum": 0.0,
+                        "type": "integer"
+                    },
+                    "page": {
+                        "title": "Page",
+                        "minimum": 1.0,
+                        "type": "integer"
+                    },
+                    "size": {
+                        "title": "Size",
+                        "minimum": 1.0,
+                        "type": "integer"
+                    }
+                }
+            },
+            "ReturnPeriodDamage": {
+                "title": "ReturnPeriodDamage",
+                "required": [
+                    "exposure",
+                    "damage_amin",
+                    "damage_mean",
+                    "damage_amax",
+                    "loss_amin",
+                    "loss_mean",
+                    "loss_amax",
+                    "hazard",
+                    "rcp",
+                    "epoch",
+                    "rp"
+                ],
+                "type": "object",
+                "properties": {
+                    "exposure": {
+                        "title": "Exposure",
+                        "type": "number"
+                    },
+                    "damage_amin": {
+                        "title": "Damage Amin",
+                        "type": "number"
+                    },
+                    "damage_mean": {
+                        "title": "Damage Mean",
+                        "type": "number"
+                    },
+                    "damage_amax": {
+                        "title": "Damage Amax",
+                        "type": "number"
+                    },
+                    "loss_amin": {
+                        "title": "Loss Amin",
+                        "type": "number"
+                    },
+                    "loss_mean": {
+                        "title": "Loss Mean",
+                        "type": "number"
+                    },
+                    "loss_amax": {
+                        "title": "Loss Amax",
+                        "type": "number"
+                    },
+                    "hazard": {
+                        "title": "Hazard",
+                        "type": "string"
+                    },
+                    "rcp": {
+                        "title": "Rcp",
+                        "type": "string"
+                    },
+                    "epoch": {
+                        "title": "Epoch",
+                        "type": "string"
+                    },
+                    "rp": {
+                        "title": "Rp",
+                        "type": "integer"
+                    }
+                }
+            },
+            "TileSourceDomains": {
+                "title": "TileSourceDomains",
+                "required": [
+                    "domains"
+                ],
+                "type": "object",
+                "properties": {
+                    "domains": {
+                        "title": "Domains",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "TileSourceMeta": {
+                "title": "TileSourceMeta",
+                "required": [
+                    "source_db",
+                    "global_type",
+                    "domain",
+                    "full_name",
+                    "description",
+                    "license",
+                    "variables"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "Id",
+                        "type": "integer"
+                    },
+                    "url_keys": {
+                        "title": "Url Keys",
+                        "type": "array",
+                        "items": {}
+                    },
+                    "source_db": {
+                        "title": "Source Db",
+                        "type": "string"
+                    },
+                    "global_type": {
+                        "title": "Global Type",
+                        "type": "string"
+                    },
+                    "domain": {
+                        "title": "Domain",
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "title": "Full Name",
+                        "type": "string"
+                    },
+                    "description": {
+                        "title": "Description",
+                        "type": "string"
+                    },
+                    "license": {
+                        "title": "License",
+                        "type": "string"
+                    },
+                    "variables": {
+                        "title": "Variables",
+                        "type": "object"
+                    }
+                }
+            },
+            "ValidationError": {
+                "title": "ValidationError",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
