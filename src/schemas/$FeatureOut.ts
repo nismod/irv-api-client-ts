@@ -17,7 +17,12 @@ export const $FeatureOut = {
             isRequired: true,
         },
         sublayer: {
-            type: 'string',
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'null',
+            }],
         },
         properties: {
             type: 'dictionary',

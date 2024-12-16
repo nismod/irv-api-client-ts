@@ -50,6 +50,7 @@ export class FeaturesService {
         assetType,
         page = 1,
         size = 50,
+        rankingScope,
     }: {
         fieldGroup: string,
         field: string,
@@ -61,6 +62,7 @@ export class FeaturesService {
         assetType?: string,
         page?: number,
         size?: number,
+        rankingScope?: string,
     }): CancelablePromise<Page_FeatureListItemOut_float__> {
         return this.httpRequest.request({
             method: 'GET',
@@ -78,6 +80,7 @@ export class FeaturesService {
                 'asset_type': assetType,
                 'page': page,
                 'size': size,
+                'ranking_scope': rankingScope,
             },
             errors: {
                 422: `Validation Error`,

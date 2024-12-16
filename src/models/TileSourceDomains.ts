@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type TileSourceDomains = {
-    domains: Array<Record<string, any>>;
+    domains: Array<Record<string, string>>;
 };
 

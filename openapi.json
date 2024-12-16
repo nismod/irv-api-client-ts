@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.2",
+    "openapi": "3.1.0",
     "info": {
         "title": "GRI Infra-Risk-Vis API",
         "description": "API Supporting Global Resilience Initiative Visualisation UI.  Serving geospatial features (inc. related damages) and raster tiles (via Terracotta)",
@@ -12,7 +12,7 @@
             "name": "MIT",
             "url": "https://raw.githubusercontent.com/nismod/infra-risk-vis/master/LICENSE"
         },
-        "version": "0.8.0"
+        "version": "0.9.0"
     },
     "paths": {
         "/features/{feature_id}": {
@@ -24,13 +24,13 @@
                 "operationId": "features-read_feature",
                 "parameters": [
                     {
+                        "name": "feature_id",
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Feature Id",
-                            "type": "integer"
-                        },
-                        "name": "feature_id",
-                        "in": "path"
+                            "type": "integer",
+                            "title": "Feature Id"
+                        }
                     }
                 ],
                 "responses": {
@@ -66,101 +66,114 @@
                 "operationId": "features-read_sorted_features",
                 "parameters": [
                     {
-                        "required": true,
-                        "schema": {
-                            "title": "Field Group",
-                            "type": "string"
-                        },
                         "name": "field_group",
-                        "in": "path"
-                    },
-                    {
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Field",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Field Group"
+                        }
+                    },
+                    {
                         "name": "field",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Dimensions",
                             "type": "string",
-                            "format": "json-string"
-                        },
+                            "title": "Field"
+                        }
+                    },
+                    {
                         "name": "dimensions",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Parameters",
                             "type": "string",
-                            "format": "json-string"
-                        },
+                            "contentMediaType": "application/json",
+                            "contentSchema": {},
+                            "title": "Dimensions"
+                        }
+                    },
+                    {
                         "name": "parameters",
-                        "in": "query"
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "contentMediaType": "application/json",
+                            "contentSchema": {},
+                            "title": "Parameters"
+                        }
                     },
                     {
-                        "required": false,
-                        "schema": {
-                            "title": "Layer",
-                            "type": "string"
-                        },
                         "name": "layer",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Sector",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Layer"
+                        }
+                    },
+                    {
                         "name": "sector",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Subsector",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Sector"
+                        }
+                    },
+                    {
                         "name": "subsector",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Asset Type",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Subsector"
+                        }
+                    },
+                    {
                         "name": "asset_type",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Page",
-                            "minimum": 1.0,
-                            "type": "integer",
-                            "default": 1
-                        },
+                            "type": "string",
+                            "title": "Asset Type"
+                        }
+                    },
+                    {
                         "name": "page",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Size",
-                            "maximum": 100.0,
-                            "minimum": 1.0,
                             "type": "integer",
-                            "default": 50
-                        },
+                            "minimum": 1,
+                            "default": 1,
+                            "title": "Page"
+                        }
+                    },
+                    {
                         "name": "size",
-                        "in": "query"
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 50,
+                            "title": "Size"
+                        }
+                    },
+                    {
+                        "name": "ranking_scope",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "contentMediaType": "application/json",
+                            "contentSchema": {},
+                            "title": "Ranking Scope"
+                        }
                     }
                 ],
                 "responses": {
@@ -196,66 +209,68 @@
                 "operationId": "attributes-read_attributes",
                 "parameters": [
                     {
-                        "required": true,
-                        "schema": {
-                            "title": "Field Group",
-                            "type": "string"
-                        },
                         "name": "field_group",
-                        "in": "path"
-                    },
-                    {
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Layer",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Field Group"
+                        }
+                    },
+                    {
                         "name": "layer",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Field",
-                            "type": "string"
-                        },
+                            "type": "string",
+                            "title": "Layer"
+                        }
+                    },
+                    {
                         "name": "field",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Dimensions",
                             "type": "string",
-                            "format": "json-string"
-                        },
+                            "title": "Field"
+                        }
+                    },
+                    {
                         "name": "dimensions",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Parameters",
                             "type": "string",
-                            "format": "json-string"
-                        },
+                            "contentMediaType": "application/json",
+                            "contentSchema": {},
+                            "title": "Dimensions"
+                        }
+                    },
+                    {
                         "name": "parameters",
-                        "in": "query"
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "contentMediaType": "application/json",
+                            "contentSchema": {},
+                            "title": "Parameters"
+                        }
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "title": "Ids",
                                 "type": "array",
                                 "items": {
                                     "type": "integer"
-                                }
+                                },
+                                "title": "Ids"
                             }
                         }
-                    },
-                    "required": true
+                    }
                 },
                 "responses": {
                     "200": {
@@ -263,8 +278,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "title": "Response Attributes-Read Attributes",
-                                    "type": "object"
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "anyOf": [
+                                            {},
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "title": "Response Attributes-Read Attributes"
                                 }
                             }
                         }
@@ -296,60 +319,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "title": "Response Tiles-Get All Tile Source Meta",
-                                    "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/TileSourceMeta"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "tiles"
-                ],
-                "summary": "Insert Source Meta",
-                "description": "Ingest Tile Source Meta",
-                "operationId": "tiles-insert_source_meta",
-                "parameters": [
-                    {
-                        "required": true,
-                        "schema": {
-                            "title": "X-Token",
-                            "type": "string"
-                        },
-                        "name": "x-token",
-                        "in": "header"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TileSourceMeta"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Tiles-Get All Tile Source Meta"
                                 }
                             }
                         }
@@ -367,13 +341,13 @@
                 "operationId": "tiles-get_tile_source_meta",
                 "parameters": [
                     {
+                        "name": "source_id",
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Source Id",
-                            "type": "integer"
-                        },
-                        "name": "source_id",
-                        "in": "path"
+                            "type": "integer",
+                            "title": "Source Id"
+                        }
                     }
                 ],
                 "responses": {
@@ -384,54 +358,6 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/TileSourceMeta"
                                 }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "tiles"
-                ],
-                "summary": "Delete Source Meta",
-                "description": "Delete Tile Source Meta",
-                "operationId": "tiles-delete_source_meta",
-                "parameters": [
-                    {
-                        "required": true,
-                        "schema": {
-                            "title": "Source Id",
-                            "type": "integer"
-                        },
-                        "name": "source_id",
-                        "in": "path"
-                    },
-                    {
-                        "required": true,
-                        "schema": {
-                            "title": "X-Token",
-                            "type": "string"
-                        },
-                        "name": "x-token",
-                        "in": "header"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
                             }
                         }
                     },
@@ -458,13 +384,13 @@
                 "operationId": "tiles-get_tile_source_domains",
                 "parameters": [
                     {
+                        "name": "source_id",
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Source Id",
-                            "type": "integer"
-                        },
-                        "name": "source_id",
-                        "in": "path"
+                            "type": "integer",
+                            "title": "Source Id"
+                        }
                     }
                 ],
                 "responses": {
@@ -501,67 +427,88 @@
                 "operationId": "tiles-get_tile",
                 "parameters": [
                     {
-                        "required": true,
-                        "schema": {
-                            "title": "Keys",
-                            "type": "string"
-                        },
                         "name": "keys",
-                        "in": "path"
-                    },
-                    {
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Tile Z",
-                            "type": "integer"
-                        },
+                            "type": "string",
+                            "title": "Keys"
+                        }
+                    },
+                    {
                         "name": "tile_z",
-                        "in": "path"
-                    },
-                    {
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Tile X",
-                            "type": "integer"
-                        },
+                            "type": "integer",
+                            "title": "Tile Z"
+                        }
+                    },
+                    {
                         "name": "tile_x",
-                        "in": "path"
-                    },
-                    {
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "title": "Tile Y",
-                            "type": "integer"
-                        },
+                            "type": "integer",
+                            "title": "Tile X"
+                        }
+                    },
+                    {
                         "name": "tile_y",
-                        "in": "path"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Tile Y"
+                        }
                     },
                     {
-                        "required": false,
-                        "schema": {
-                            "title": "Colormap",
-                            "type": "string"
-                        },
                         "name": "colormap",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Stretch Range",
-                            "type": "string"
-                        },
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Colormap"
+                        }
+                    },
+                    {
                         "name": "stretch_range",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Explicit Color Map",
-                            "type": "string"
-                        },
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Stretch Range"
+                        }
+                    },
+                    {
                         "name": "explicit_color_map",
-                        "in": "query"
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Explicit Color Map"
+                        }
                     }
                 ],
                 "responses": {
@@ -591,32 +538,39 @@
                 "operationId": "colormap-get_colormap",
                 "parameters": [
                     {
-                        "required": true,
-                        "schema": {
-                            "title": "Colormap",
-                            "type": "string"
-                        },
                         "name": "colormap",
-                        "in": "query"
-                    },
-                    {
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "title": "Stretch Range",
-                            "type": "string"
-                        },
-                        "name": "stretch_range",
-                        "in": "query"
+                            "type": "string",
+                            "title": "Colormap"
+                        }
                     },
                     {
+                        "name": "stretch_range",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Stretch Range"
+                        }
+                    },
+                    {
+                        "name": "num_values",
+                        "in": "query",
                         "required": false,
                         "schema": {
-                            "title": "Num Values",
                             "type": "integer",
-                            "default": 255
-                        },
-                        "name": "num_values",
-                        "in": "query"
+                            "default": 255,
+                            "title": "Num Values"
+                        }
                     }
                 ],
                 "responses": {
@@ -647,107 +601,126 @@
     "components": {
         "schemas": {
             "Adaptation": {
-                "title": "Adaptation",
+                "properties": {
+                    "hazard": {
+                        "type": "string",
+                        "title": "Hazard"
+                    },
+                    "rcp": {
+                        "type": "string",
+                        "title": "Rcp"
+                    },
+                    "adaptation_name": {
+                        "type": "string",
+                        "title": "Adaptation Name"
+                    },
+                    "adaptation_protection_level": {
+                        "type": "number",
+                        "title": "Adaptation Protection Level"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "title": "Properties"
+                    }
+                },
+                "type": "object",
                 "required": [
-                    "adaptation_cost",
-                    "avoided_ead_amin",
-                    "avoided_ead_mean",
-                    "avoided_ead_amax",
-                    "avoided_eael_amin",
-                    "avoided_eael_mean",
-                    "avoided_eael_amax",
                     "hazard",
                     "rcp",
                     "adaptation_name",
-                    "adaptation_protection_level"
+                    "adaptation_protection_level",
+                    "properties"
                 ],
-                "type": "object",
-                "properties": {
-                    "adaptation_cost": {
-                        "title": "Adaptation Cost",
-                        "type": "number"
-                    },
-                    "avoided_ead_amin": {
-                        "title": "Avoided Ead Amin",
-                        "type": "number"
-                    },
-                    "avoided_ead_mean": {
-                        "title": "Avoided Ead Mean",
-                        "type": "number"
-                    },
-                    "avoided_ead_amax": {
-                        "title": "Avoided Ead Amax",
-                        "type": "number"
-                    },
-                    "avoided_eael_amin": {
-                        "title": "Avoided Eael Amin",
-                        "type": "number"
-                    },
-                    "avoided_eael_mean": {
-                        "title": "Avoided Eael Mean",
-                        "type": "number"
-                    },
-                    "avoided_eael_amax": {
-                        "title": "Avoided Eael Amax",
-                        "type": "number"
-                    },
-                    "hazard": {
-                        "title": "Hazard",
-                        "type": "string"
-                    },
-                    "rcp": {
-                        "title": "Rcp",
-                        "type": "string"
-                    },
-                    "adaptation_name": {
-                        "title": "Adaptation Name",
-                        "type": "string"
-                    },
-                    "adaptation_protection_level": {
-                        "title": "Adaptation Protection Level",
-                        "type": "number"
-                    }
-                }
+                "title": "Adaptation"
             },
             "ColorMap": {
-                "title": "ColorMap",
+                "properties": {
+                    "colormap": {
+                        "items": {
+                            "$ref": "#/components/schemas/ColorMapEntry"
+                        },
+                        "type": "array",
+                        "title": "Colormap"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "colormap"
                 ],
-                "type": "object",
-                "properties": {
-                    "colormap": {
-                        "title": "Colormap",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ColorMapEntry"
-                        }
-                    }
-                }
+                "title": "ColorMap"
             },
             "ColorMapEntry": {
-                "title": "ColorMapEntry",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "title": "Value"
+                    },
+                    "rgba": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array",
+                        "title": "Rgba"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "value",
                     "rgba"
                 ],
-                "type": "object",
-                "properties": {
-                    "value": {
-                        "title": "Value",
-                        "type": "number"
-                    },
-                    "rgba": {
-                        "title": "Rgba",
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    }
-                }
+                "title": "ColorMapEntry"
             },
             "ExpectedDamage": {
-                "title": "ExpectedDamage",
+                "properties": {
+                    "ead_amin": {
+                        "type": "number",
+                        "title": "Ead Amin"
+                    },
+                    "ead_mean": {
+                        "type": "number",
+                        "title": "Ead Mean"
+                    },
+                    "ead_amax": {
+                        "type": "number",
+                        "title": "Ead Amax"
+                    },
+                    "eael_amin": {
+                        "type": "number",
+                        "title": "Eael Amin"
+                    },
+                    "eael_mean": {
+                        "type": "number",
+                        "title": "Eael Mean"
+                    },
+                    "eael_amax": {
+                        "type": "number",
+                        "title": "Eael Amax"
+                    },
+                    "hazard": {
+                        "type": "string",
+                        "title": "Hazard"
+                    },
+                    "rcp": {
+                        "type": "string",
+                        "title": "Rcp"
+                    },
+                    "epoch": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "title": "Epoch"
+                    },
+                    "protection_standard": {
+                        "type": "integer",
+                        "title": "Protection Standard"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "ead_amin",
                     "ead_mean",
@@ -760,52 +733,32 @@
                     "epoch",
                     "protection_standard"
                 ],
-                "type": "object",
-                "properties": {
-                    "ead_amin": {
-                        "title": "Ead Amin",
-                        "type": "number"
-                    },
-                    "ead_mean": {
-                        "title": "Ead Mean",
-                        "type": "number"
-                    },
-                    "ead_amax": {
-                        "title": "Ead Amax",
-                        "type": "number"
-                    },
-                    "eael_amin": {
-                        "title": "Eael Amin",
-                        "type": "number"
-                    },
-                    "eael_mean": {
-                        "title": "Eael Mean",
-                        "type": "number"
-                    },
-                    "eael_amax": {
-                        "title": "Eael Amax",
-                        "type": "number"
-                    },
-                    "hazard": {
-                        "title": "Hazard",
-                        "type": "string"
-                    },
-                    "rcp": {
-                        "title": "Rcp",
-                        "type": "string"
-                    },
-                    "epoch": {
-                        "title": "Epoch",
-                        "type": "string"
-                    },
-                    "protection_standard": {
-                        "title": "Protection Standard",
-                        "type": "integer"
-                    }
-                }
+                "title": "ExpectedDamage"
             },
             "FeatureListItemOut_float_": {
-                "title": "FeatureListItemOut[float]",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "string_id": {
+                        "type": "string",
+                        "title": "String Id"
+                    },
+                    "layer": {
+                        "type": "string",
+                        "title": "Layer"
+                    },
+                    "bbox_wkt": {
+                        "type": "string",
+                        "title": "Bbox Wkt"
+                    },
+                    "value": {
+                        "type": "number",
+                        "title": "Value"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "id",
                     "string_id",
@@ -813,109 +766,128 @@
                     "bbox_wkt",
                     "value"
                 ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "title": "Id",
-                        "type": "integer"
-                    },
-                    "string_id": {
-                        "title": "String Id",
-                        "type": "string"
-                    },
-                    "layer": {
-                        "title": "Layer",
-                        "type": "string"
-                    },
-                    "bbox_wkt": {
-                        "title": "Bbox Wkt",
-                        "type": "string"
-                    },
-                    "value": {
-                        "title": "Value",
-                        "type": "number"
-                    }
-                }
+                "title": "FeatureListItemOut[float]"
             },
             "FeatureOut": {
-                "title": "FeatureOut",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "string_id": {
+                        "type": "string",
+                        "title": "String Id"
+                    },
+                    "layer": {
+                        "type": "string",
+                        "title": "Layer"
+                    },
+                    "sublayer": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Sublayer"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "title": "Properties"
+                    },
+                    "damages_expected": {
+                        "items": {
+                            "$ref": "#/components/schemas/ExpectedDamage"
+                        },
+                        "type": "array",
+                        "title": "Damages Expected",
+                        "default": []
+                    },
+                    "damages_return_period": {
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnPeriodDamage"
+                        },
+                        "type": "array",
+                        "title": "Damages Return Period",
+                        "default": []
+                    },
+                    "damages_npv": {
+                        "items": {
+                            "$ref": "#/components/schemas/NPVDamage"
+                        },
+                        "type": "array",
+                        "title": "Damages Npv",
+                        "default": []
+                    },
+                    "adaptation": {
+                        "items": {
+                            "$ref": "#/components/schemas/Adaptation"
+                        },
+                        "type": "array",
+                        "title": "Adaptation",
+                        "default": []
+                    }
+                },
+                "type": "object",
                 "required": [
                     "id",
                     "string_id",
                     "layer",
                     "properties"
                 ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "title": "Id",
-                        "type": "integer"
-                    },
-                    "string_id": {
-                        "title": "String Id",
-                        "type": "string"
-                    },
-                    "layer": {
-                        "title": "Layer",
-                        "type": "string"
-                    },
-                    "sublayer": {
-                        "title": "Sublayer",
-                        "type": "string"
-                    },
-                    "properties": {
-                        "title": "Properties",
-                        "type": "object"
-                    },
-                    "damages_expected": {
-                        "title": "Damages Expected",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ExpectedDamage"
-                        },
-                        "default": []
-                    },
-                    "damages_return_period": {
-                        "title": "Damages Return Period",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ReturnPeriodDamage"
-                        },
-                        "default": []
-                    },
-                    "damages_npv": {
-                        "title": "Damages Npv",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/NPVDamage"
-                        },
-                        "default": []
-                    },
-                    "adaptation": {
-                        "title": "Adaptation",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Adaptation"
-                        },
-                        "default": []
-                    }
-                }
+                "title": "FeatureOut"
             },
             "HTTPValidationError": {
-                "title": "HTTPValidationError",
-                "type": "object",
                 "properties": {
                     "detail": {
-                        "title": "Detail",
-                        "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ValidationError"
-                        }
+                        },
+                        "type": "array",
+                        "title": "Detail"
                     }
-                }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
             },
             "NPVDamage": {
-                "title": "NPVDamage",
+                "properties": {
+                    "ead_amin": {
+                        "type": "number",
+                        "title": "Ead Amin"
+                    },
+                    "ead_mean": {
+                        "type": "number",
+                        "title": "Ead Mean"
+                    },
+                    "ead_amax": {
+                        "type": "number",
+                        "title": "Ead Amax"
+                    },
+                    "eael_amin": {
+                        "type": "number",
+                        "title": "Eael Amin"
+                    },
+                    "eael_mean": {
+                        "type": "number",
+                        "title": "Eael Mean"
+                    },
+                    "eael_amax": {
+                        "type": "number",
+                        "title": "Eael Amax"
+                    },
+                    "hazard": {
+                        "type": "string",
+                        "title": "Hazard"
+                    },
+                    "rcp": {
+                        "type": "string",
+                        "title": "Rcp"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "ead_amin",
                     "ead_mean",
@@ -926,78 +898,97 @@
                     "hazard",
                     "rcp"
                 ],
-                "type": "object",
-                "properties": {
-                    "ead_amin": {
-                        "title": "Ead Amin",
-                        "type": "number"
-                    },
-                    "ead_mean": {
-                        "title": "Ead Mean",
-                        "type": "number"
-                    },
-                    "ead_amax": {
-                        "title": "Ead Amax",
-                        "type": "number"
-                    },
-                    "eael_amin": {
-                        "title": "Eael Amin",
-                        "type": "number"
-                    },
-                    "eael_mean": {
-                        "title": "Eael Mean",
-                        "type": "number"
-                    },
-                    "eael_amax": {
-                        "title": "Eael Amax",
-                        "type": "number"
-                    },
-                    "hazard": {
-                        "title": "Hazard",
-                        "type": "string"
-                    },
-                    "rcp": {
-                        "title": "Rcp",
-                        "type": "string"
-                    }
-                }
+                "title": "NPVDamage"
             },
             "Page_FeatureListItemOut_float__": {
-                "title": "Page[FeatureListItemOut[float]]",
+                "properties": {
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/FeatureListItemOut_float_"
+                        },
+                        "type": "array",
+                        "title": "Items"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "minimum": 0.0,
+                        "title": "Total"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "minimum": 1.0,
+                        "title": "Page"
+                    },
+                    "size": {
+                        "type": "integer",
+                        "minimum": 1.0,
+                        "title": "Size"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "items",
                     "total",
                     "page",
                     "size"
                 ],
-                "type": "object",
-                "properties": {
-                    "items": {
-                        "title": "Items",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FeatureListItemOut_float_"
-                        }
-                    },
-                    "total": {
-                        "title": "Total",
-                        "minimum": 0.0,
-                        "type": "integer"
-                    },
-                    "page": {
-                        "title": "Page",
-                        "minimum": 1.0,
-                        "type": "integer"
-                    },
-                    "size": {
-                        "title": "Size",
-                        "minimum": 1.0,
-                        "type": "integer"
-                    }
-                }
+                "title": "Page[FeatureListItemOut[float]]"
             },
             "ReturnPeriodDamage": {
-                "title": "ReturnPeriodDamage",
+                "properties": {
+                    "exposure": {
+                        "type": "number",
+                        "title": "Exposure"
+                    },
+                    "damage_amin": {
+                        "type": "number",
+                        "title": "Damage Amin"
+                    },
+                    "damage_mean": {
+                        "type": "number",
+                        "title": "Damage Mean"
+                    },
+                    "damage_amax": {
+                        "type": "number",
+                        "title": "Damage Amax"
+                    },
+                    "loss_amin": {
+                        "type": "number",
+                        "title": "Loss Amin"
+                    },
+                    "loss_mean": {
+                        "type": "number",
+                        "title": "Loss Mean"
+                    },
+                    "loss_amax": {
+                        "type": "number",
+                        "title": "Loss Amax"
+                    },
+                    "hazard": {
+                        "type": "string",
+                        "title": "Hazard"
+                    },
+                    "rcp": {
+                        "type": "string",
+                        "title": "Rcp"
+                    },
+                    "epoch": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "title": "Epoch"
+                    },
+                    "rp": {
+                        "type": "integer",
+                        "title": "Rp"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "exposure",
                     "damage_amin",
@@ -1011,134 +1002,82 @@
                     "epoch",
                     "rp"
                 ],
-                "type": "object",
-                "properties": {
-                    "exposure": {
-                        "title": "Exposure",
-                        "type": "number"
-                    },
-                    "damage_amin": {
-                        "title": "Damage Amin",
-                        "type": "number"
-                    },
-                    "damage_mean": {
-                        "title": "Damage Mean",
-                        "type": "number"
-                    },
-                    "damage_amax": {
-                        "title": "Damage Amax",
-                        "type": "number"
-                    },
-                    "loss_amin": {
-                        "title": "Loss Amin",
-                        "type": "number"
-                    },
-                    "loss_mean": {
-                        "title": "Loss Mean",
-                        "type": "number"
-                    },
-                    "loss_amax": {
-                        "title": "Loss Amax",
-                        "type": "number"
-                    },
-                    "hazard": {
-                        "title": "Hazard",
-                        "type": "string"
-                    },
-                    "rcp": {
-                        "title": "Rcp",
-                        "type": "string"
-                    },
-                    "epoch": {
-                        "title": "Epoch",
-                        "type": "string"
-                    },
-                    "rp": {
-                        "title": "Rp",
-                        "type": "integer"
-                    }
-                }
+                "title": "ReturnPeriodDamage"
             },
             "TileSourceDomains": {
-                "title": "TileSourceDomains",
+                "properties": {
+                    "domains": {
+                        "items": {
+                            "additionalProperties": {
+                                "type": "string"
+                            },
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Domains"
+                    }
+                },
+                "type": "object",
                 "required": [
                     "domains"
                 ],
-                "type": "object",
-                "properties": {
-                    "domains": {
-                        "title": "Domains",
-                        "type": "array",
-                        "items": {
-                            "type": "object"
-                        }
-                    }
-                }
+                "title": "TileSourceDomains"
             },
             "TileSourceMeta": {
-                "title": "TileSourceMeta",
-                "required": [
-                    "source_db",
-                    "global_type",
-                    "domain",
-                    "full_name",
-                    "description",
-                    "license",
-                    "variables"
-                ],
-                "type": "object",
                 "properties": {
                     "id": {
-                        "title": "Id",
-                        "type": "integer"
-                    },
-                    "url_keys": {
-                        "title": "Url Keys",
-                        "type": "array",
-                        "items": {}
-                    },
-                    "source_db": {
-                        "title": "Source Db",
-                        "type": "string"
-                    },
-                    "global_type": {
-                        "title": "Global Type",
-                        "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Id"
                     },
                     "domain": {
-                        "title": "Domain",
-                        "type": "string"
+                        "type": "string",
+                        "title": "Domain"
                     },
-                    "full_name": {
-                        "title": "Full Name",
-                        "type": "string"
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "group": {
+                        "type": "string",
+                        "title": "Group"
                     },
                     "description": {
-                        "title": "Description",
-                        "type": "string"
+                        "type": "string",
+                        "title": "Description"
                     },
                     "license": {
-                        "title": "License",
-                        "type": "string"
+                        "type": "string",
+                        "title": "License"
                     },
-                    "variables": {
-                        "title": "Variables",
-                        "type": "object"
+                    "keys": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Keys"
                     }
-                }
+                },
+                "type": "object",
+                "required": [
+                    "domain",
+                    "name",
+                    "group",
+                    "description",
+                    "license",
+                    "keys"
+                ],
+                "title": "TileSourceMeta"
             },
             "ValidationError": {
-                "title": "ValidationError",
-                "required": [
-                    "loc",
-                    "msg",
-                    "type"
-                ],
-                "type": "object",
                 "properties": {
                     "loc": {
-                        "title": "Location",
-                        "type": "array",
                         "items": {
                             "anyOf": [
                                 {
@@ -1148,17 +1087,26 @@
                                     "type": "integer"
                                 }
                             ]
-                        }
+                        },
+                        "type": "array",
+                        "title": "Location"
                     },
                     "msg": {
-                        "title": "Message",
-                        "type": "string"
+                        "type": "string",
+                        "title": "Message"
                     },
                     "type": {
-                        "title": "Error Type",
-                        "type": "string"
+                        "type": "string",
+                        "title": "Error Type"
                     }
-                }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
             }
         }
     }

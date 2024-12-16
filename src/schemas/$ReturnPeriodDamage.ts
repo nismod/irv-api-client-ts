@@ -41,7 +41,12 @@ export const $ReturnPeriodDamage = {
             isRequired: true,
         },
         epoch: {
-            type: 'string',
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'number',
+            }],
             isRequired: true,
         },
         rp: {
