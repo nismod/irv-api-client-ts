@@ -1,0 +1,34 @@
+name: Build and publish TypeScript API client (dev)
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish under"
+        required: true
+        default: "dev"
+
+env:
+  REGISTRY: https://npm.pkg.github.com
+
+jobs:
+  publish-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: npm
+          registry-url: ${{ env.REGISTRY }}
+          scope: "@nismod"
+
+      - run: npm ci
+
+      - name: Build project and publish with dev tag
+        run: npm publish --tag ${{ inputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
