@@ -65,3 +65,13 @@ apiClient.
 3. Commit the `openapi.json` and the updated source files
 4. Run `npm version X.X.X` to update the version stored in `package.json` and `package-lock.json`. This creates a git commit and tag.
 5. Push the changes to the repository - it is set up to automatically publish a package using GitHub Actions (see `.github/workflows/build_and_publish.yml`).
+
+## Publishing development versions of the package
+
+If you want to share with other team members a version of the package that is currently under development, you can do that by publishing a development version of the package.
+
+1. Create a branch on which a new version of this package will be developed
+2. Update the version of the package to a pre-release version such as X.X.X-dev.X (e.g. 0.9.0-dev.1)
+3. Push branch to remote
+4. In GitHub Actions, manually trigger the `build_and_publish_dev.yml` workflow. When prompted, choose the development branch as the target ref. There's another parameter for the tag to apply to the release, but the default of `dev` can be left unchanged.
+5. Other developers can easily install projects that rely on the `0.9.0-dev.1` version (as long as they have access to the package registry where this package is published)
