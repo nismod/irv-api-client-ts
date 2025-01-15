@@ -4,14 +4,12 @@
 /* eslint-disable */
 
 export type TileSourceMeta = {
-    id?: number;
-    url_keys?: Array<any>;
-    source_db: string;
-    global_type: string;
+    id?: (number | null);
     domain: string;
-    full_name: string;
+    name: string;
+    group: string;
     description: string;
     license: string;
-    variables: Record<string, any>;
+    keys: Array<string>;
 };
 

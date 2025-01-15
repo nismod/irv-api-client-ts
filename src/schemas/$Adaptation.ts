@@ -4,34 +4,6 @@
 /* eslint-disable */
 export const $Adaptation = {
     properties: {
-        adaptation_cost: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_ead_amin: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_ead_mean: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_ead_amax: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_eael_amin: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_eael_mean: {
-            type: 'number',
-            isRequired: true,
-        },
-        avoided_eael_amax: {
-            type: 'number',
-            isRequired: true,
-        },
         hazard: {
             type: 'string',
             isRequired: true,
@@ -46,6 +18,14 @@ export const $Adaptation = {
         },
         adaptation_protection_level: {
             type: 'number',
+            isRequired: true,
+        },
+        properties: {
+            type: 'dictionary',
+            contains: {
+                properties: {
+                },
+            },
             isRequired: true,
         },
     },

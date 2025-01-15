@@ -12,7 +12,7 @@ export type FeatureOut = {
     id: number;
     string_id: string;
     layer: string;
-    sublayer?: string;
+    sublayer?: (string | null);
     properties: Record<string, any>;
     damages_expected?: Array<ExpectedDamage>;
     damages_return_period?: Array<ReturnPeriodDamage>;

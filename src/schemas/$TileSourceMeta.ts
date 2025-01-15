@@ -5,28 +5,22 @@
 export const $TileSourceMeta = {
     properties: {
         id: {
-            type: 'number',
-        },
-        url_keys: {
-            type: 'array',
-            contains: {
-                properties: {
-                },
-            },
-        },
-        source_db: {
-            type: 'string',
-            isRequired: true,
-        },
-        global_type: {
-            type: 'string',
-            isRequired: true,
+            type: 'any-of',
+            contains: [{
+                type: 'number',
+            }, {
+                type: 'null',
+            }],
         },
         domain: {
             type: 'string',
             isRequired: true,
         },
-        full_name: {
+        name: {
+            type: 'string',
+            isRequired: true,
+        },
+        group: {
             type: 'string',
             isRequired: true,
         },
@@ -38,11 +32,10 @@ export const $TileSourceMeta = {
             type: 'string',
             isRequired: true,
         },
-        variables: {
-            type: 'dictionary',
+        keys: {
+            type: 'array',
             contains: {
-                properties: {
-                },
+                type: 'string',
             },
             isRequired: true,
         },

@@ -28,7 +28,7 @@ export class AttributesService {
         dimensions: string,
         parameters: string,
         requestBody: Array<number>,
-    }): CancelablePromise<Record<string, any>> {
+    }): CancelablePromise<Record<string, null>> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/attributes/{field_group}',
