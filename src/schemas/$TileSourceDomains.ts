@@ -9,8 +9,7 @@ export const $TileSourceDomains = {
             contains: {
                 type: 'dictionary',
                 contains: {
-                    properties: {
-                    },
+                    type: 'string',
                 },
             },
             isRequired: true,

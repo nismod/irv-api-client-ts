@@ -26,33 +26,6 @@ export class TilesService {
     }
 
     /**
-     * Insert Source Meta
-     * Ingest Tile Source Meta
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public tilesInsertSourceMeta({
-        xToken,
-        requestBody,
-    }: {
-        xToken: string,
-        requestBody: TileSourceMeta,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/tiles/sources',
-            headers: {
-                'x-token': xToken,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
      * Get Tile Source Meta
      * Retrieve metadata about a single tile source
      * @returns TileSourceMeta Successful Response
@@ -68,34 +41,6 @@ export class TilesService {
             url: '/tiles/sources/{source_id}',
             path: {
                 'source_id': sourceId,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
-     * Delete Source Meta
-     * Delete Tile Source Meta
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public tilesDeleteSourceMeta({
-        sourceId,
-        xToken,
-    }: {
-        sourceId: number,
-        xToken: string,
-    }): CancelablePromise<any> {
-        return this.httpRequest.request({
-            method: 'DELETE',
-            url: '/tiles/sources/{source_id}',
-            path: {
-                'source_id': sourceId,
-            },
-            headers: {
-                'x-token': xToken,
             },
             errors: {
                 422: `Validation Error`,
@@ -169,9 +114,9 @@ export class TilesService {
         tileZ: number,
         tileX: number,
         tileY: number,
-        colormap?: string,
-        stretchRange?: string,
-        explicitColorMap?: string,
+        colormap?: (string | null),
+        stretchRange?: (string | null),
+        explicitColorMap?: (string | null),
     }): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'GET',

@@ -12,7 +12,7 @@ export type ExpectedDamage = {
     eael_amax: number;
     hazard: string;
     rcp: string;
-    epoch: string;
+    epoch: (string | number);
     protection_standard: number;
 };
 

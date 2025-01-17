@@ -31,7 +31,7 @@ export class ColormapService {
         numValues = 255,
     }: {
         colormap: string,
-        stretchRange: string,
+        stretchRange: (string | null),
         numValues?: number,
     }): CancelablePromise<ColorMap> {
         return this.httpRequest.request({
